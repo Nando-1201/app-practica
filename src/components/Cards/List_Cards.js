@@ -1,11 +1,34 @@
 import Cards from "./Cards"
-import celebridades from '../../Helpers/Usuarios'
+import React, {children, useEffect, useState} from 'react'
+
 
 const ListCards = () => {
-console.log(celebridades[0].name.last)
+    const [celebridades, setcelebridades] = useState([])
+    const [error, seterror] = useState(false)
+    useEffect(() => {
+        const getUsuarios = async() =>{
+            try {
+                const res = await fetch("https://randomuser.me/api/?results=50")
+                const data = await res.json()
+                setcelebridades(data.results)
+                seterror(false)
+            } catch (error) {
+                console.log(error)
+                seterror(true)
+            }
+            
+        }
+        getUsuarios()
+    }, [])
+
+    if (error){
+        return <div class="alert alert-danger" role="alert">
+                    Error loading the Users api! <a href='https://randomuser.me'>Revise el link</a>
+               </div>
+    }
     return (
         <div>        
-            <div className="container">
+            <div className="container mx-auto mx-4">
                 <div className="row">
                 {celebridades.map(user =>(    
                     <div className="col-sm-6 col-md-4 col-lg-3" key={user.login.uuid}>
